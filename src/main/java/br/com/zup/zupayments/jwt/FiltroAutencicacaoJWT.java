@@ -29,7 +29,8 @@ public class FiltroAutencicacaoJWT extends UsernamePasswordAuthenticationFilter 
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request,
+                                                HttpServletResponse response) throws AuthenticationException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -51,6 +52,6 @@ public class FiltroAutencicacaoJWT extends UsernamePasswordAuthenticationFilter 
         String username = ((UsuarioLogin) authResult.getPrincipal()).getUsername();
         String token = componenteJWT.gerarToken(username);
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
-        response.addHeader("Authorization", "Token "+token);
+        response.addHeader("Authorization", "Token " + token);
     }
 }

@@ -2,8 +2,13 @@ package br.com.zup.zupayments.models;
 
 import br.com.zup.zupayments.enums.RolesEnum;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "usuarios")
@@ -11,7 +16,8 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
+    private UUID id;
 
     @Column(length = 50, nullable = false)
     private String nomeCompleto;
@@ -26,15 +32,29 @@ public class Usuario {
 
     private Boolean ativo;
 
-    public Usuario() {
-    }
 
-    public Long getId() {
+    @Column(nullable = false, name = "data_hora_criacao")
+    @CreationTimestamp
+    private LocalDateTime criadoEm;
+
+    @Column(name = "data_hora_atualizacao")
+    @UpdateTimestamp
+    private LocalDateTime atualizadoEm;
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+
+    public void setNomeCompleto(String nomeCompleto) {
+        this.nomeCompleto = nomeCompleto;
     }
 
     public String getEmail() {
@@ -61,14 +81,6 @@ public class Usuario {
         this.nivelDeAcesso = nivelDeAcesso;
     }
 
-    public String getNomeCompleto() {
-        return nomeCompleto;
-    }
-
-    public void setNomeCompleto(String nomeCompleto) {
-        this.nomeCompleto = nomeCompleto;
-    }
-
     public Boolean getAtivo() {
         return ativo;
     }
@@ -77,16 +89,19 @@ public class Usuario {
         this.ativo = ativo;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Usuario usuario = (Usuario) o;
-        return Objects.equals(id, usuario.id);
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public void setCriadoEm(LocalDateTime criadoEm) {
+        this.criadoEm = criadoEm;
+    }
+
+    public LocalDateTime getAtualizadoEm() {
+        return atualizadoEm;
+    }
+
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) {
+        this.atualizadoEm = atualizadoEm;
     }
 }

@@ -1,80 +1,15 @@
 package br.com.zup.zupayments.dtos.usuario.saida;
 
 import br.com.zup.zupayments.enums.RolesEnum;
-import br.com.zup.zupayments.models.Usuario;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
-public class UsuarioDTO {
+public record UsuarioDTO(
+        UUID id,
+        String email,
+        String nomeCompleto,
+        RolesEnum nivelDeAcesso,
+        Boolean ativo
+) {
 
-    private Long id;
-    private String email;
-    private String nomeCompleto;
-    private RolesEnum nivelDeAcesso;
-    private Boolean ativo;
-
-    public UsuarioDTO() {
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getNomeCompleto() {
-        return nomeCompleto;
-    }
-
-    public void setNomeCompleto(String nomeCompleto) {
-        this.nomeCompleto = nomeCompleto;
-    }
-
-    public RolesEnum getNivelDeAcesso() {
-        return nivelDeAcesso;
-    }
-
-    public void setNivelDeAcesso(RolesEnum nivelDeAcesso) {
-        this.nivelDeAcesso = nivelDeAcesso;
-    }
-
-    public Boolean getAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public static UsuarioDTO converterModeloParaDTO(Usuario usuario) {
-        UsuarioDTO dto = new UsuarioDTO();
-        dto.setId(usuario.getId());
-        dto.setNomeCompleto(usuario.getNomeCompleto());
-        dto.setEmail(usuario.getEmail());
-        dto.setNivelDeAcesso(usuario.getNivelDeAcesso());
-        dto.setAtivo(usuario.getAtivo());
-
-        return dto;
-    }
-
-    public static Iterable<UsuarioDTO> converterListaDeModeloParaListaDto(Iterable<Usuario> usuarios) {
-        List<UsuarioDTO> dtos = new ArrayList<>();
-
-        for (Usuario usuario : usuarios) {
-            dtos.add(converterModeloParaDTO(usuario));
-        }
-
-        return dtos;
-    }
 }
