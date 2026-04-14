@@ -12,96 +12,36 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public class EntradaCadastroPedidoDeCompraDTO {
+public record EntradaCadastroPedidoDeCompraDTO(
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+        LocalDate dataDeVencimento,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dataDeVencimento;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        Double saldo,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    private Double saldo;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+        LocalDate dataDePagamento,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dataDePagamento;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @NotBlank(message = "{validacao.campo_em_branco}")
+        @NotEmpty(message = "{validacao.campo_vazio}")
+        @Email(message = "{validacao.email_invalido}")
+        String emailResponsavel,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @NotBlank(message = "{validacao.campo_em_branco}")
-    @NotEmpty(message = "{validacao.campo_vazio}")
-    @Email(message = "{validacao.email_invalido}")
-    private String emailResponsavel;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+        LocalDate dataLimiteEnvio,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dataLimiteEnvio;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        FormaDePagamento formaDePagamento,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    private FormaDePagamento formaDePagamento;
-
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @NotBlank(message = "{validacao.campo_em_branco}")
-    @NotEmpty(message = "{validacao.campo_vazio}")
-    private String cnpjOuCpf;
-
-    public EntradaCadastroPedidoDeCompraDTO() {
-    }
-
-    public LocalDate getDataDeVencimento() {
-        return dataDeVencimento;
-    }
-
-    public void setDataDeVencimento(LocalDate dataDeVencimento) {
-        this.dataDeVencimento = dataDeVencimento;
-    }
-
-    public Double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
-    }
-
-    public LocalDate getDataDePagamento() {
-        return dataDePagamento;
-    }
-
-    public void setDataDePagamento(LocalDate dataDePagamento) {
-        this.dataDePagamento = dataDePagamento;
-    }
-
-    public String getEmailResponsavel() {
-        return emailResponsavel;
-    }
-
-    public void setEmailResponsavel(String emailResponsavel) {
-        this.emailResponsavel = emailResponsavel;
-    }
-
-    public LocalDate getDataLimiteEnvio() {
-        return dataLimiteEnvio;
-    }
-
-    public void setDataLimiteEnvio(LocalDate dataLimiteEnvio) {
-        this.dataLimiteEnvio = dataLimiteEnvio;
-    }
-
-    public FormaDePagamento getFormaDePagamento() {
-        return formaDePagamento;
-    }
-
-    public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
-        this.formaDePagamento = formaDePagamento;
-    }
-
-    public String getCnpjOuCpf() {
-        return cnpjOuCpf;
-    }
-
-    public void setCnpjOuCpf(String cnpjOuCpf) {
-        this.cnpjOuCpf = cnpjOuCpf;
-    }
-
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @NotBlank(message = "{validacao.campo_em_branco}")
+        @NotEmpty(message = "{validacao.campo_vazio}")
+        String cnpjOuCpf
+) {
     public PedidoDeCompra converterDtoParaModelo() {
         PedidoDeCompra pedidoDeCompra = new PedidoDeCompra();
 

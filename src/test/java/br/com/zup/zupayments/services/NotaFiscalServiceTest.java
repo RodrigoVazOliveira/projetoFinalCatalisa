@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -25,16 +25,16 @@ class NotaFiscalServiceTest {
     @Autowired
     private NotaFiscalService notaFiscalService;
 
-    @MockBean
+    @MockitoBean
     private NotaFiscalRepository notaFiscalRepository;
 
-    @MockBean
+    @MockitoBean
     private FornecedorService fornecedorService;
 
-    @MockBean
+    @MockitoBean
     private ResponsavelService responsavelService;
 
-    @MockBean
+    @MockitoBean
     private PedidoDeCompraService pedidoDeCompraService;
 
     private NotaFiscal notaFiscalteste;

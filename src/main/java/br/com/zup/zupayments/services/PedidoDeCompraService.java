@@ -28,7 +28,11 @@ public class PedidoDeCompraService {
 
     @Autowired
     @Lazy
-    public PedidoDeCompraService(PedidoDeCompraRespository pedidoDeCompraRespository, ResponsavelService responsavelService, FornecedorService fornecedorService, NotaFiscalService notaFiscalService, EmailService emailService) {
+    public PedidoDeCompraService(PedidoDeCompraRespository pedidoDeCompraRespository,
+                                 ResponsavelService responsavelService,
+                                 FornecedorService fornecedorService,
+                                 NotaFiscalService notaFiscalService,
+                                 EmailService emailService) {
         this.pedidoDeCompraRespository = pedidoDeCompraRespository;
         this.responsavelService = responsavelService;
         this.fornecedorService = fornecedorService;
@@ -105,8 +109,10 @@ public class PedidoDeCompraService {
     }
 
     public void atualizarResponsavelPorPedidoDeCompra(AtualizarResponsavelDoPedidoDeCompraDTO dados) {
-        PedidoDeCompra pedidoDeCompra = procurarPedidoDeCompraPeloNumeroDePedido(dados.getNumeroPedidoDeCompra());
-        Responsavel responsavel = responsavelService.procurarResponsavelPorEmail(dados.getEmailResponsavel());
+        PedidoDeCompra pedidoDeCompra =
+                procurarPedidoDeCompraPeloNumeroDePedido(dados.numeroPedidoDeCompra());
+        Responsavel responsavel =
+                responsavelService.procurarResponsavelPorEmail(dados.emailResponsavel());
         pedidoDeCompra.setResponsavel(responsavel);
         pedidoDeCompraRespository.save(pedidoDeCompra);
     }

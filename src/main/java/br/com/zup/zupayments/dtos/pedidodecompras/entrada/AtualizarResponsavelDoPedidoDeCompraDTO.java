@@ -1,25 +1,18 @@
 package br.com.zup.zupayments.dtos.pedidodecompras.entrada;
 
-public class AtualizarResponsavelDoPedidoDeCompraDTO {
-    private Long numeroPedidoDeCompra;
-    private String emailResponsavel;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-    public AtualizarResponsavelDoPedidoDeCompraDTO() {
-    }
+public record AtualizarResponsavelDoPedidoDeCompraDTO(
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        Long numeroPedidoDeCompra,
 
-    public Long getNumeroPedidoDeCompra() {
-        return numeroPedidoDeCompra;
-    }
-
-    public void setNumeroPedidoDeCompra(Long numeroPedidoDeCompra) {
-        this.numeroPedidoDeCompra = numeroPedidoDeCompra;
-    }
-
-    public String getEmailResponsavel() {
-        return emailResponsavel;
-    }
-
-    public void setEmailResponsavel(String emailResponsavel) {
-        this.emailResponsavel = emailResponsavel;
-    }
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @NotBlank(message = "{validacao.campo_em_branco}")
+        @NotEmpty(message = "{validacao.campo_vazio}")
+        @Email(message = "{validacao.email_invalido}")
+        String emailResponsavel
+) {
 }

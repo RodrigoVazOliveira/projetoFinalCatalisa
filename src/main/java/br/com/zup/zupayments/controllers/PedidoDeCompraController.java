@@ -62,7 +62,12 @@ public class PedidoDeCompraController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Retornar todos os pedidos de compra com nota fiscal nao enviadas", description = "Retornar todos os pedidos de compra com nota fiscal nao enviadas")
     Iterable<PedidoDeCompra> obterPedidosComNotaFiscaisPendentesDeEnvio(@ModelAttribute FiltroPedidoDeCompraComNotaFiscalPendenteDTO filtro) {
-        return pedidoDeCompraService.obterTodosPedidosDeCompraComValorMaiorQueZeroEResponsaveisAtivo(filtro.getValorMinimo(), filtro.getAtivo(), filtro.getDataInicial());
+        return pedidoDeCompraService
+                .obterTodosPedidosDeCompraComValorMaiorQueZeroEResponsaveisAtivo(
+                        filtro.valorMinimo(),
+                        filtro.ativo(),
+                        filtro.dataInicial()
+                );
     }
 
     @PatchMapping
@@ -77,9 +82,9 @@ public class PedidoDeCompraController {
     @Operation(summary = "Envia e-mail para o responsável do pedido de compra que possuem pendencia de nota fiscal")
     void enviarEmailDeCobrancas(@ModelAttribute FiltroPedidoDeCompraComNotaFiscalPendenteDTO filtro) {
         try {
-            final Double valorMinimo = filtro.getValorMinimo();
-            final Boolean ativo = filtro.getAtivo();
-            final LocalDate dataInicial = filtro.getDataInicial();
+            final Double valorMinimo = filtro.valorMinimo();
+            final Boolean ativo = filtro.ativo();
+            final LocalDate dataInicial = filtro.dataInicial();
 
             pedidoDeCompraService.enviarEmailParaPedidosDeCompraComNotasPendentes(valorMinimo, ativo, dataInicial);
         } catch (MessagingException e) {

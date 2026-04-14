@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,19 +23,19 @@ import java.util.Optional;
 @ContextConfiguration(classes = PedidoDeCompraService.class)
 class PedidoDeCompraServiceTest {
 
-    @MockBean
+    @MockitoBean
     private PedidoDeCompraRespository pedidoDeCompraRespository;
 
-    @MockBean
+    @MockitoBean
     private ResponsavelService responsavelService;
 
-    @MockBean
+    @MockitoBean
     private FornecedorService fornecedorService;
 
-    @MockBean
+    @MockitoBean
     private NotaFiscalService notaFiscalService;
 
-    @MockBean
+    @MockitoBean
     private EmailService emailService;
 
     @Autowired

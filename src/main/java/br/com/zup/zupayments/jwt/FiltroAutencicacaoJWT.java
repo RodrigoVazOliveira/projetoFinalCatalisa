@@ -35,9 +35,13 @@ public class FiltroAutencicacaoJWT extends UsernamePasswordAuthenticationFilter 
 
         try {
             LoginDTO login = objectMapper.readValue(request.getInputStream(), LoginDTO.class);
-            Usuario usuarioLogin = usuarioService.procurarUsuarioPeloEmail(login.getEmail());
+            Usuario usuarioLogin =
+                    usuarioService.procurarUsuarioPeloEmail(
+                            login.email()
+                    );
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken
-                    (login.getEmail(), login.getSenha(), List.of(
+                    (login.email(),
+                            login.senha(), List.of(
                             new SimpleGrantedAuthority(String.valueOf(usuarioLogin.getNivelDeAcesso()))
                     ));
 
