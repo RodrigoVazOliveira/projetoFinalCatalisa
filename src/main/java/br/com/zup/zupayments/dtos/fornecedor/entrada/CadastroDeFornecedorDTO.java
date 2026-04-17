@@ -72,15 +72,7 @@ public record CadastroDeFornecedorDTO(
         CategoriaDeCusto categoriaDeCusto
 ) {
     public Fornecedor converterDtoParaModelo() {
-        String cnpjOuCpf = null;
-
-        if (this.cpf != null) {
-            cnpjOuCpf = cpf;
-        }
-
-        if (this.cnpj != null) {
-            cnpjOuCpf = cnpj;
-        }
+        String cnpjOuCpf = preencherCpfouCnpj();
 
         Fornecedor fornecedor = new Fornecedor();
         fornecedor.setCnpjOuCpf(cnpjOuCpf);
@@ -97,5 +89,12 @@ public record CadastroDeFornecedorDTO(
         fornecedor.setAtivo(true);
 
         return fornecedor;
+    }
+
+    private String preencherCpfouCnpj() {
+        if (this.cpf != null)
+            return this.cpf;
+
+        return this.cnpj;
     }
 }

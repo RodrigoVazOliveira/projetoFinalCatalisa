@@ -1,9 +1,12 @@
 package br.com.zup.zupayments.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "notas_fiscais")
@@ -11,7 +14,8 @@ public class NotaFiscal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
+    private UUID id;
 
     @Column(nullable = false)
     private Long numeroDaNota;
@@ -36,11 +40,11 @@ public class NotaFiscal {
     public NotaFiscal() {
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -106,5 +110,32 @@ public class NotaFiscal {
 
     public void setCancelar(Boolean cancelar) {
         this.cancelar = cancelar;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        NotaFiscal that = (NotaFiscal) o;
+        return Objects.equals(id, that.id) && Objects.equals(numeroDaNota, that.numeroDaNota) && Objects.equals(fornecedor, that.fornecedor) && Objects.equals(valorAPagar, that.valorAPagar) && Objects.equals(dataDeEmissao, that.dataDeEmissao) && Objects.equals(pedidoDeCompra, that.pedidoDeCompra) && Objects.equals(dataDeEnvio, that.dataDeEnvio) && Objects.equals(responsavel, that.responsavel) && Objects.equals(cancelar, that.cancelar);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, numeroDaNota, fornecedor, valorAPagar, dataDeEmissao, pedidoDeCompra, dataDeEnvio, responsavel, cancelar);
+    }
+
+    @Override
+    public String toString() {
+        return "NotaFiscal{" +
+                "id=" + id +
+                ", numeroDaNota=" + numeroDaNota +
+                ", fornecedor=" + fornecedor +
+                ", valorAPagar=" + valorAPagar +
+                ", dataDeEmissao=" + dataDeEmissao +
+                ", pedidoDeCompra=" + pedidoDeCompra +
+                ", dataDeEnvio=" + dataDeEnvio +
+                ", responsavel=" + responsavel +
+                ", cancelar=" + cancelar +
+                '}';
     }
 }

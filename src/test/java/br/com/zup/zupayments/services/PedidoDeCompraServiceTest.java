@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @SpringBootTest
 @ContextConfiguration(classes = PedidoDeCompraService.class)
@@ -47,9 +48,9 @@ class PedidoDeCompraServiceTest {
     private List<PedidoDeCompra> pedidoDeCompras;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.pedidoDeCompra = new PedidoDeCompra();
-        this.pedidoDeCompra.setNumeroDePedido(31L);
+        this.pedidoDeCompra.setNumeroDePedido(UUID.randomUUID());
         this.pedidoDeCompra.setDataDePagamento(LocalDate.now());
         this.pedidoDeCompra.setSaldo(2.000);
         this.pedidoDeCompra.setDataDePagamento(LocalDate.now());
@@ -67,14 +68,14 @@ class PedidoDeCompraServiceTest {
 
         this.pedidoDeCompras = new ArrayList<>();
 
-        for (Long i = 0L; i < 10; i++) {
-            this.pedidoDeCompras.add(criarNovoPedido(i));
+        for (int i = 0; i < 10; i++) {
+            this.pedidoDeCompras.add(criarNovoPedido(UUID.randomUUID()));
         }
     }
 
-    private PedidoDeCompra criarNovoPedido(Long numeroDePedido) {
+    private PedidoDeCompra criarNovoPedido(UUID numeroDePedido) {
         PedidoDeCompra pedido = new PedidoDeCompra();
-        pedido.setNumeroDePedido(31L);
+        pedido.setNumeroDePedido(numeroDePedido);
         pedido.setDataDePagamento(LocalDate.now());
         pedido.setSaldo(2.000);
         pedido.setDataDePagamento(LocalDate.now());
@@ -108,7 +109,7 @@ class PedidoDeCompraServiceTest {
     void obterTodosOsPedidoDeCompraTest(){
         Optional<PedidoDeCompra> optionalPedidoDeCompra =Optional.empty();
 
-        Mockito.when(pedidoDeCompraRespository.findById(Mockito.anyLong())).thenReturn(optionalPedidoDeCompra);
+        Mockito.when(pedidoDeCompraRespository.findById(Mockito.any())).thenReturn(optionalPedidoDeCompra);
 
         Assertions.assertThrows(RuntimeException.class,() ->{
             pedidoDeCompraService.obterTodosOsPedidoDeCompra();
@@ -120,10 +121,10 @@ class PedidoDeCompraServiceTest {
     void testarCancelamentoDePedidoDeCompra() {
         Optional<PedidoDeCompra> optionalPedidoDeCompra = Optional.of(pedidoDeCompra);
 
-        Mockito.when(pedidoDeCompraRespository.findById(Mockito.anyLong())).thenReturn(optionalPedidoDeCompra);
+        Mockito.when(pedidoDeCompraRespository.findById(Mockito.any())).thenReturn(optionalPedidoDeCompra);
         Mockito.when(pedidoDeCompraRespository.save(Mockito.any(PedidoDeCompra.class))).thenReturn(pedidoDeCompra);
 
-        pedidoDeCompraService.cancelarPedidoDeCompra(1L);
+        pedidoDeCompraService.cancelarPedidoDeCompra(UUID.randomUUID());
 
         Mockito.verify(pedidoDeCompraRespository, Mockito.times(1)).save(pedidoDeCompra);
     }

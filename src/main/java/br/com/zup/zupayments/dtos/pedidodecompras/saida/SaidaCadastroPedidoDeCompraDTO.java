@@ -12,9 +12,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public record SaidaCadastroPedidoDeCompraDTO(
-        Long numeroDePedido,
+        UUID numeroDePedido,
 
         @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
         @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -39,7 +40,8 @@ public record SaidaCadastroPedidoDeCompraDTO(
 
         PedidoDeCompraFornecedorDTO fornecedor
 ) {
-    public static SaidaCadastroPedidoDeCompraDTO converterModeloParaDto(PedidoDeCompra pedidoDeCompra) {
+    public static SaidaCadastroPedidoDeCompraDTO converterModeloParaDto(
+            PedidoDeCompra pedidoDeCompra) {
         return new SaidaCadastroPedidoDeCompraDTO(
                 pedidoDeCompra.getNumeroDePedido(),
                 pedidoDeCompra.getDataDeVencimento(),

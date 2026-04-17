@@ -17,6 +17,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
 @SpringBootTest
 @ContextConfiguration(classes = NotaFiscalService.class)
@@ -65,7 +66,7 @@ class NotaFiscalServiceTest {
         fornecedor.setEstado("Estado da empresa");
 
         this.pedidoDeCompra = new PedidoDeCompra();
-        this.pedidoDeCompra.setNumeroDePedido(1L);
+        this.pedidoDeCompra.setNumeroDePedido(UUID.randomUUID());
 
         this.notaFiscalteste.setFornecedor(fornecedor);
         this.notaFiscalteste.setValorAPagar(300.50);
@@ -90,20 +91,20 @@ class NotaFiscalServiceTest {
 
     @Test
     void testarAtivarOuDesativarNotaFiscal() {
-        notaFiscalteste.setId(1L);
+        notaFiscalteste.setId(UUID.randomUUID());
         Optional<NotaFiscal> optionalNotaFiscal = Optional.of(notaFiscalteste);
-        Mockito.when(notaFiscalRepository.findById(Mockito.anyLong())).thenReturn(optionalNotaFiscal);
+        Mockito.when(notaFiscalRepository.findById(Mockito.any())).thenReturn(optionalNotaFiscal);
         Mockito.when(notaFiscalRepository.save(Mockito.any())).thenReturn(notaFiscalteste);
-        NotaFiscal teste = notaFiscalService.cancelarNF(1L);
+        NotaFiscal teste = notaFiscalService.cancelarNF(UUID.randomUUID());
         Assertions.assertEquals(teste, notaFiscalteste);
     }
 
     @Test
     void testarAtivarOuDesativarNotaFiscalError() {
         Optional<NotaFiscal> optionalNotaFiscal = Optional.empty();
-        Mockito.when(notaFiscalRepository.findById(Mockito.anyLong())).thenReturn(optionalNotaFiscal);
+        Mockito.when(notaFiscalRepository.findById(Mockito.any())).thenReturn(optionalNotaFiscal);
         Assertions.assertThrows(RuntimeException.class, () -> {
-            notaFiscalService.cancelarNF(1L);
+            notaFiscalService.cancelarNF(UUID.randomUUID());
         });
     }
 }

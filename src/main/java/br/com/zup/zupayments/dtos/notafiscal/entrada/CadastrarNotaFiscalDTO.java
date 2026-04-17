@@ -13,12 +13,12 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public record CadastrarNotaFiscalDTO(
         @NotNull(message = "{validacao.campo_obrigatorio}")
         Long numeroDaNota,
 
-        @NotNull(message = "{validacao.campo_obrigatorio}")
         @NotBlank(message = "{validacao.campo_em_branco}")
         @NotEmpty(message = "{validacao.campo_vazio}")
         String cnpjOuCpfFornecedor,
@@ -31,13 +31,12 @@ public record CadastrarNotaFiscalDTO(
         LocalDate dataDeEmissao,
 
         @NotNull(message = "{validacao.campo_obrigatorio}")
-        List<Long> pedidoDeCompras,
+        List<UUID> pedidoDeCompras,
 
         @NotNull(message = "{validacao.campo_obrigatorio}")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
         LocalDate dataDeEnvio,
 
-        @NotNull(message = "{validacao.campo_obrigatorio}")
         @NotBlank(message = "{validacao.campo_em_branco}")
         @NotEmpty(message = "{validacao.campo_vazio}")
         @Email(message = "{validacao.email_invalido}")
@@ -67,7 +66,7 @@ public record CadastrarNotaFiscalDTO(
     private List<PedidoDeCompra> gerarListaDePedidoDeCompraParaModelo() {
         List<PedidoDeCompra> pedidos = new ArrayList<>();
 
-        for (Long numeroPedido : this.pedidoDeCompras) {
+        for (UUID numeroPedido : this.pedidoDeCompras) {
             PedidoDeCompra pedido = new PedidoDeCompra();
             pedido.setNumeroDePedido(numeroPedido);
             pedidos.add(pedido);
