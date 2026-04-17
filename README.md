@@ -5,6 +5,8 @@ Sistema de Gerenciamento de Pagamentos a Fornecedores Fixos
 ![CI/CD Pipeline](https://img.shields.io/badge/build-passing-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-85%25-yellowgreen)
+![Java 21](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot 3](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)
 
 ---
 
@@ -58,7 +60,7 @@ O sistema mantém uma base centralizada com:
 
 | Tecnologia | Versão |
 |-----------|--------|
-| Java | 17 LTS |
+| Java | 21 LTS |
 | Spring Boot | 3.x |
 | Maven | 3.9+ |
 | JUnit 5 | 5.x |
@@ -71,9 +73,9 @@ O sistema mantém uma base centralizada com:
 ## 🚀 Como Usar
 
 ### Pré-requisitos
-- Java 17 ou superior
+- Java 21 ou superior ⚠️ **OBRIGATÓRIO**
 - Maven 3.9 ou superior
-
+- Git
 ### Instalação
 
 1. **Clone o repositório:**

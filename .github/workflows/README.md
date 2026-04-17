@@ -10,7 +10,9 @@ Executado automaticamente em:
 - **Push** para `main` ou `develop`
 - **Pull Requests** para `main` ou `develop`
 
-#### Passos:
+**Java Version:** `21` (LTS)
+
+#### Passos executados:
 1. ✅ Checkout do código
 2. ✅ Setup do JDK 17
 3. ✅ Compilação do projeto (Maven clean compile)
@@ -33,7 +35,9 @@ Executado automaticamente em:
 - **Push** para `main` ou `develop`
 - **Pull Requests** para `main` ou `develop`
 
-#### Passos:
+**Java Version:** `21` (LTS)
+
+#### Passos executados:
 1. ✅ Checkout do código
 2. ✅ Setup do JDK 17
 3. ✅ Execução de testes com cobertura JaCoCo
