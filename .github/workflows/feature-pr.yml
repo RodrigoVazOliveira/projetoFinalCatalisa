@@ -1,0 +1,108 @@
+name: Criar PR de Feature para Develop
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Extrair informações da branch
+      id: branch-info
+      run: |
+        # Extrair nome da feature
+        BRANCH_NAME=${GITHUB_REF#refs/heads/}
+        FEATURE_NAME=${BRANCH_NAME#feature/}
+        
+        # Converter para título legível (substitui - por espaço e capitaliza)
+        TITLE="${FEATURE_NAME//-/ }"
+        TITLE="${TITLE//\// - }"
+        TITLE="${TITLE^}"
+        
+        echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+        echo "feature_name=$FEATURE_NAME" >> $GITHUB_OUTPUT
+        echo "title=$TITLE" >> $GITHUB_OUTPUT
+
+    - name: Criar Pull Request
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const branchName = '${{ steps.branch-info.outputs.branch_name }}';
+          const featureName = '${{ steps.branch-info.outputs.feature_name }}';
+          const title = '${{ steps.branch-info.outputs.title }}';
+          
+          // Verificar se já existe PR aberto para essa branch
+          const { data: pulls } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            head: `${context.repo.owner}:${branchName}`,
+            base: 'develop'
+          });
+          
+          if (pulls.length > 0) {
+            console.log(`PR já existe: #${pulls[0].number}`);
+            return;
+          }
+          
+          // Criar PR
+          const { data: pr } = await github.rest.pulls.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `feat: ${title}`,
+            head: branchName,
+            base: 'develop',
+            body: `## 📝 Descrição\n\nFeature: **${title}**\n\nBranch: \`${branchName}\`\n\n### ✅ Checklist\n- [ ] Código foi testado\n- [ ] Testes unitários foram adicionados/atualizados\n- [ ] Documentação foi atualizada\n- [ ] Sem breaking changes\n\n### 📋 Tipo de Mudança\n- [ ] Bug fix\n- [ ] Nova feature\n- [ ] Melhoria\n- [ ] Refatoração\n\n---\n\n*PR criado automaticamente pelo GitHub Actions*`
+          });
+          
+          console.log(`✅ PR criado com sucesso: #${pr.number}`);
+          
+          // Adicionar labels
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: pr.number,
+            labels: ['feature', 'auto-created']
+          }).catch(err => {
+            console.log('⚠️ Não foi possível adicionar labels');
+          });
+
+    - name: Comentar no PR
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const branchName = '${{ steps.branch-info.outputs.branch_name }}';
+          
+          // Buscar PR aberto
+          const { data: pulls } = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            head: `${context.repo.owner}:${branchName}`,
+            base: 'develop'
+          });
+          
+          if (pulls.length > 0) {
+            const pr = pulls[0];
+            
+            // Comentar no PR
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: `🤖 **Automated PR Created**\n\nEste PR foi criado automaticamente pelo GitHub Actions.\n\n✨ **Próximos passos:**\n1. ✅ Aguarde o CI/CD passar\n2. 👁️ Peça review aos seus colegas\n3. ✓ Mescle para \`develop\` quando aprovado\n\n💡 **Dica:** Use \`/merge\` para fazer merge automático quando aprovado.`
+            });
+          }
+

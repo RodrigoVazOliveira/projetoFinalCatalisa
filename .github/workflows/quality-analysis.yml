@@ -1,0 +1,57 @@
+name: Análise de Qualidade de Código
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Configurar JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Executar testes com cobertura
+      run: mvn clean verify
+      env:
+        MAVEN_OPTS: -Xmx1024m
+
+    - name: Upload de cobertura para Codecov
+      uses: codecov/codecov-action@v3
+      if: always()
+      with:
+        files: target/site/jacoco/jacoco.xml
+        flags: unittests
+        name: codecov-umbrella
+
+    - name: Cache SonarQube packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: SonarQube Scan
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      run: |
+        mvn -B sonar:sonar \
+          -Dsonar.projectKey=projetoFinalCatalisa \
+          -Dsonar.sources=src/main/java \
+          -Dsonar.tests=src/test/java \
+          -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+      if: env.SONAR_TOKEN != ''
+
