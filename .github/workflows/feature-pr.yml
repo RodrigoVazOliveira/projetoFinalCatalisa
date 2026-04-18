@@ -49,7 +49,7 @@ jobs:
             repo: context.repo.repo,
             state: 'open',
             head: `${context.repo.owner}:${branchName}`,
-            base: 'develop'
+            base: 'master'
           });
           
           if (pulls.length > 0) {
@@ -63,7 +63,7 @@ jobs:
             repo: context.repo.repo,
             title: `feat: ${title}`,
             head: branchName,
-            base: 'develop',
+            base: 'master',
             body: `## 📝 Descrição\n\nFeature: **${title}**\n\nBranch: \`${branchName}\`\n\n### ✅ Checklist\n- [ ] Código foi testado\n- [ ] Testes unitários foram adicionados/atualizados\n- [ ] Documentação foi atualizada\n- [ ] Sem breaking changes\n\n### 📋 Tipo de Mudança\n- [ ] Bug fix\n- [ ] Nova feature\n- [ ] Melhoria\n- [ ] Refatoração\n\n---\n\n*PR criado automaticamente pelo GitHub Actions*`
           });
           
@@ -91,7 +91,7 @@ jobs:
             repo: context.repo.repo,
             state: 'open',
             head: `${context.repo.owner}:${branchName}`,
-            base: 'develop'
+            base: 'master'
           });
           
           if (pulls.length > 0) {
