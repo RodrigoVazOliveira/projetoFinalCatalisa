@@ -8,116 +8,50 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class SaidaCadastroPedidoDeCompraDTO {
+public record SaidaCadastroPedidoDeCompraDTO(
+        UUID numeroDePedido,
 
-    private Long numeroDePedido;
+        @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
+        @JsonDeserialize(using = LocalDateDeserializer.class)
+        @JsonSerialize(using = LocalDateSerializer.class)
+        LocalDate dataDeVencimento,
 
-    @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate dataDeVencimento;
-    private Double saldo;
+        Double saldo,
 
-    @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate dataDePagamento;
+        @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
+        @JsonDeserialize(using = LocalDateDeserializer.class)
+        @JsonSerialize(using = LocalDateSerializer.class)
+        LocalDate dataDePagamento,
 
-    @NotBlank(message = "{validacao.nome_completo}")
-    private Responsavel responsavel;
+        Responsavel responsavel,
 
-    @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate dataLimiteEnvio;
-    private FormaDePagamento formaDePagamento;
+        @JsonFormat(pattern = "dd/MM/yyyy", shape = JsonFormat.Shape.STRING, timezone = "America/Sao_Paulo")
+        @JsonDeserialize(using = LocalDateDeserializer.class)
+        @JsonSerialize(using = LocalDateSerializer.class)
+        LocalDate dataLimiteEnvio,
 
-    private PedidoDeCompraFornecedorDTO fornecedor;
+        FormaDePagamento formaDePagamento,
 
-    public SaidaCadastroPedidoDeCompraDTO() {
-    }
-
-        public Long getNumeroDePedido() {
-        return numeroDePedido;
-    }
-
-    public void setNumeroDePedido(Long numeroDePedido) {
-        this.numeroDePedido = numeroDePedido;
-    }
-
-    public LocalDate getDataDeVencimento() {
-        return dataDeVencimento;
-    }
-
-    public void setDataDeVencimento(LocalDate dataDeVencimento) {
-        this.dataDeVencimento = dataDeVencimento;
-    }
-
-    public Double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
-    }
-
-    public LocalDate getDataDePagamento() {
-        return dataDePagamento;
-    }
-
-    public void setDataDePagamento(LocalDate dataDePagamento) {
-        this.dataDePagamento = dataDePagamento;
-    }
-
-    public Responsavel getResponsavel() {
-        return responsavel;
-    }
-
-    public void setResponsavel(Responsavel responsavel) {
-        this.responsavel = responsavel;
-    }
-
-    public LocalDate getDataLimiteEnvio() {
-        return dataLimiteEnvio;
-    }
-
-    public void setDataLimiteEnvio(LocalDate dataLimiteEnvio) {
-        this.dataLimiteEnvio = dataLimiteEnvio;
-    }
-
-    public FormaDePagamento getFormaDePagamento() {
-        return formaDePagamento;
-    }
-
-    public void setFormaDePagamento(FormaDePagamento formaDePagamento) {
-        this.formaDePagamento = formaDePagamento;
-    }
-
-    public PedidoDeCompraFornecedorDTO getFornecedor() {
-        return fornecedor;
-    }
-
-    public void setFornecedor(PedidoDeCompraFornecedorDTO fornecedor) {
-        this.fornecedor = fornecedor;
-    }
-
-    public static SaidaCadastroPedidoDeCompraDTO converterModeloParaDto(PedidoDeCompra pedidoDeCompra) {
-        SaidaCadastroPedidoDeCompraDTO dto = new SaidaCadastroPedidoDeCompraDTO();
-        dto.setNumeroDePedido(pedidoDeCompra.getNumeroDePedido());
-        dto.setDataDeVencimento(pedidoDeCompra.getDataDeVencimento());
-        dto.setSaldo(pedidoDeCompra.getSaldo());
-        dto.setDataDePagamento(pedidoDeCompra.getDataDePagamento());
-        dto.setResponsavel(pedidoDeCompra.getResponsavel());
-        dto.setDataLimiteEnvio(pedidoDeCompra.getDataLimiteEnvio());
-        dto.setFormaDePagamento(pedidoDeCompra.getFormaDePagamento());
-        dto.setFornecedor(PedidoDeCompraFornecedorDTO.converterModeloParaDto(pedidoDeCompra.getFornecedor()));
-        return dto;
+        PedidoDeCompraFornecedorDTO fornecedor
+) {
+    public static SaidaCadastroPedidoDeCompraDTO converterModeloParaDto(
+            PedidoDeCompra pedidoDeCompra) {
+        return new SaidaCadastroPedidoDeCompraDTO(
+                pedidoDeCompra.getNumeroDePedido(),
+                pedidoDeCompra.getDataDeVencimento(),
+                pedidoDeCompra.getSaldo(),
+                pedidoDeCompra.getDataDePagamento(),
+                pedidoDeCompra.getResponsavel(),
+                pedidoDeCompra.getDataLimiteEnvio(),
+                pedidoDeCompra.getFormaDePagamento(),
+                PedidoDeCompraFornecedorDTO.converterModeloParaDto(pedidoDeCompra.getFornecedor())
+        );
     }
 
     public static Iterable<SaidaCadastroPedidoDeCompraDTO> converterListaDeModeloParaListaDto(

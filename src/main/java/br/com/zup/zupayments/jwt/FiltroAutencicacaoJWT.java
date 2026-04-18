@@ -29,14 +29,19 @@ public class FiltroAutencicacaoJWT extends UsernamePasswordAuthenticationFilter 
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request,
+                                                HttpServletResponse response) throws AuthenticationException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
             LoginDTO login = objectMapper.readValue(request.getInputStream(), LoginDTO.class);
-            Usuario usuarioLogin = usuarioService.procurarUsuarioPeloEmail(login.getEmail());
+            Usuario usuarioLogin =
+                    usuarioService.procurarUsuarioPeloEmail(
+                            login.email()
+                    );
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken
-                    (login.getEmail(), login.getSenha(), List.of(
+                    (login.email(),
+                            login.senha(), List.of(
                             new SimpleGrantedAuthority(String.valueOf(usuarioLogin.getNivelDeAcesso()))
                     ));
 
@@ -51,6 +56,6 @@ public class FiltroAutencicacaoJWT extends UsernamePasswordAuthenticationFilter 
         String username = ((UsuarioLogin) authResult.getPrincipal()).getUsername();
         String token = componenteJWT.gerarToken(username);
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
-        response.addHeader("Authorization", "Token "+token);
+        response.addHeader("Authorization", "Token " + token);
     }
 }

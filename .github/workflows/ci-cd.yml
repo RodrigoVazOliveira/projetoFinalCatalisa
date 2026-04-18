@@ -1,0 +1,90 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: ['21']
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v4
+
+    - name: Configurar JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Compilar projeto com Maven
+      run: mvn clean compile
+      env:
+        MAVEN_OPTS: -Xmx1024m
+
+    - name: Executar testes unitários
+      run: mvn test
+      env:
+        MAVEN_OPTS: -Xmx1024m
+
+    - name: Build do projeto
+      run: mvn package -DskipTests
+      env:
+        MAVEN_OPTS: -Xmx1024m
+
+    - name: Upload de artefatos
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: build-artifacts
+        path: target/*.jar
+        retention-days: 7
+
+    - name: Upload de relatórios de teste
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-reports
+        path: target/surefire-reports/
+        retention-days: 30
+
+    - name: Publicar resultados dos testes
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: target/surefire-reports/TEST-*.xml
+        check_name: Resultados dos Testes
+        comment_mode: always
+
+    - name: Comentário de sucesso no PR
+      if: success() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '✅ Build e testes executados com sucesso!'
+          })
+
+    - name: Comentário de falha no PR
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ Build ou testes falharam. Verifique os logs para mais detalhes.'
+          })
+

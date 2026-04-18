@@ -2,9 +2,11 @@ package br.com.zup.zupayments.models;
 
 import br.com.zup.zupayments.enums.FormaDePagamento;
 import jakarta.persistence.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "pedidos_de_compras")
@@ -12,7 +14,8 @@ public class PedidoDeCompra {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long numeroDePedido;
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
+    private UUID numeroDePedido;
 
     @Column(nullable = false)
     private LocalDate dataDeVencimento;
@@ -41,11 +44,11 @@ public class PedidoDeCompra {
     public PedidoDeCompra() {
     }
 
-    public Long getNumeroDePedido() {
+    public UUID getNumeroDePedido() {
         return numeroDePedido;
     }
 
-    public void setNumeroDePedido(Long numeroDePedido) {
+    public void setNumeroDePedido(UUID numeroDePedido) {
         this.numeroDePedido = numeroDePedido;
     }
 
@@ -115,14 +118,13 @@ public class PedidoDeCompra {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PedidoDeCompra that = (PedidoDeCompra) o;
-        return Objects.equals(numeroDePedido, that.numeroDePedido);
+        return Objects.equals(numeroDePedido, that.numeroDePedido) && Objects.equals(dataDeVencimento, that.dataDeVencimento) && Objects.equals(saldo, that.saldo) && Objects.equals(dataDePagamento, that.dataDePagamento) && Objects.equals(responsavel, that.responsavel) && Objects.equals(dataLimiteEnvio, that.dataLimiteEnvio) && formaDePagamento == that.formaDePagamento && Objects.equals(fornecedor, that.fornecedor) && Objects.equals(cancelado, that.cancelado);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(numeroDePedido);
+        return Objects.hash(numeroDePedido, dataDeVencimento, saldo, dataDePagamento, responsavel, dataLimiteEnvio, formaDePagamento, fornecedor, cancelado);
     }
 }

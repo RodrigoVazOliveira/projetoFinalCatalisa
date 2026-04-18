@@ -13,96 +13,35 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class CadastrarNotaFiscalDTO {
+public record CadastrarNotaFiscalDTO(
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        Long numeroDaNota,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    private Long numeroDaNota;
+        @NotBlank(message = "{validacao.campo_em_branco}")
+        @NotEmpty(message = "{validacao.campo_vazio}")
+        String cnpjOuCpfFornecedor,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @NotBlank(message = "{validacao.campo_em_branco}")
-    @NotEmpty(message = "{validacao.campo_vazio}")
-    private String cnpjOuCpfFornecedor;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        Double valorAPagar,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    private Double valorAPagar;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+        LocalDate dataDeEmissao,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dataDeEmissao;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        List<UUID> pedidoDeCompras,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    private List<Long> pedidoDeCompras;
+        @NotNull(message = "{validacao.campo_obrigatorio}")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+        LocalDate dataDeEnvio,
 
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    private LocalDate dataDeEnvio;
-
-    @NotNull(message = "{validacao.campo_obrigatorio}")
-    @NotBlank(message = "{validacao.campo_em_branco}")
-    @NotEmpty(message = "{validacao.campo_vazio}")
-    @Email(message = "{validacao.email_invalido}")
-    private String emailDoResponsavel;
-
-    public CadastrarNotaFiscalDTO() {
-    }
-
-    public Long getNumeroDaNota() {
-        return numeroDaNota;
-    }
-
-    public void setNumeroDaNota(Long numeroDaNota) {
-        this.numeroDaNota = numeroDaNota;
-    }
-
-    public String getCnpjOuCpfFornecedor() {
-        return cnpjOuCpfFornecedor;
-    }
-
-    public void setCnpjOuCpfFornecedor(String cnpjOuCpfFornecedor) {
-        this.cnpjOuCpfFornecedor = cnpjOuCpfFornecedor;
-    }
-
-    public Double getValorAPagar() {
-        return valorAPagar;
-    }
-
-    public void setValorAPagar(Double valorAPagar) {
-        this.valorAPagar = valorAPagar;
-    }
-
-    public LocalDate getDataDeEmissao() {
-        return dataDeEmissao;
-    }
-
-    public void setDataDeEmissao(LocalDate dataDeEmissao) {
-        this.dataDeEmissao = dataDeEmissao;
-    }
-
-    public List<Long> getPedidoDeCompras() {
-        return pedidoDeCompras;
-    }
-
-    public void setPedidoDeCompras(List<Long> pedidoDeCompras) {
-        this.pedidoDeCompras = pedidoDeCompras;
-    }
-
-    public LocalDate getDataDeEnvio() {
-        return dataDeEnvio;
-    }
-
-    public void setDataDeEnvio(LocalDate dataDeEnvio) {
-        this.dataDeEnvio = dataDeEnvio;
-    }
-
-    public String getEmailDoResponsavel() {
-        return emailDoResponsavel;
-    }
-
-    public void setEmailDoResponsavel(String emailDoResponsavel) {
-        this.emailDoResponsavel = emailDoResponsavel;
-    }
-
+        @NotBlank(message = "{validacao.campo_em_branco}")
+        @NotEmpty(message = "{validacao.campo_vazio}")
+        @Email(message = "{validacao.email_invalido}")
+        String emailDoResponsavel
+) {
     public NotaFiscal converterDtoParaModelo() {
         NotaFiscal notaFiscal = new NotaFiscal();
         notaFiscal.setNumeroDaNota(this.numeroDaNota);
@@ -127,7 +66,7 @@ public class CadastrarNotaFiscalDTO {
     private List<PedidoDeCompra> gerarListaDePedidoDeCompraParaModelo() {
         List<PedidoDeCompra> pedidos = new ArrayList<>();
 
-        for (Long numeroPedido : this.pedidoDeCompras) {
+        for (UUID numeroPedido : this.pedidoDeCompras) {
             PedidoDeCompra pedido = new PedidoDeCompra();
             pedido.setNumeroDePedido(numeroPedido);
             pedidos.add(pedido);

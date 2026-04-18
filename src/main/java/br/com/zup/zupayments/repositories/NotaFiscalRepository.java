@@ -5,8 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Repository
-public interface NotaFiscalRepository extends CrudRepository<NotaFiscal, Long> {
+public interface NotaFiscalRepository extends CrudRepository<NotaFiscal, UUID> {
     Iterable<NotaFiscal> findAllByDataDeEmissaoBetween(LocalDate dataInicial, LocalDate dataFinal);
 }
