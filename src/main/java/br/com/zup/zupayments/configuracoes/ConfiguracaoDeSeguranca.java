@@ -43,8 +43,15 @@ public class ConfiguracaoDeSeguranca {
         authenticationManagerBuilder.userDetailsService(usuarioLoginService).passwordEncoder(critografarSenha());
         final AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-        http.csrf(AbstractHttpConfigurer::disable)
+        // Configuração otimizada para HTTP/2 com Spring Security
+        http
+                // Desabilitar CSRF (API stateless com JWT)
+                .csrf(AbstractHttpConfigurer::disable)
+
+                // CORS configurado
                 .cors(cors -> cors.configurationSource(configuracaoDeCors()))
+
+                // Autorização por endpoint
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers(HttpMethod.POST, "/fornecedores/**").hasAnyAuthority(String.valueOf(RolesEnum.PERFIL_MASTER), String.valueOf(RolesEnum.PERFIL_COMPRAS))
                         .requestMatchers(HttpMethod.GET, "/fornecedores/**").hasAnyAuthority(String.valueOf(RolesEnum.PERFIL_MASTER), String.valueOf(RolesEnum.PERFIL_COMPRAS))
@@ -65,10 +72,26 @@ public class ConfiguracaoDeSeguranca {
                         .requestMatchers(HttpMethod.PATCH, "/usuarios/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Session management - Stateless para HTTP/2
+                .sessionManagement(sessionManagement ->
+                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Authentication manager
                 .authenticationManager(authenticationManager)
-                .addFilterBefore(new FiltroAutencicacaoJWT(componenteJWT, authenticationManager, new UsuarioService(usuarioRepository, critografarSenha())), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new FiltroDeAutorizacao(authenticationManager, componenteJWT, usuarioLoginService), UsernamePasswordAuthenticationFilter.class);
+
+                // Filtros JWT
+                .addFilterBefore(
+                    new FiltroAutencicacaoJWT(componenteJWT, authenticationManager, new UsuarioService(usuarioRepository, critografarSenha())),
+                    UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                    new FiltroDeAutorizacao(authenticationManager, componenteJWT, usuarioLoginService),
+                    UsernamePasswordAuthenticationFilter.class)
+
+                // Headers de segurança (compatível com HTTP/2)
+                .headers(headers -> headers
+                    .cacheControl(cache -> cache.disable())
+                    .httpStrictTransportSecurity(hsts -> hsts.disable()));
 
         return http.build();
     }
