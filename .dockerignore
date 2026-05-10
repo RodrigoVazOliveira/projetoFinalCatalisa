@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+
+# Maven
+target/
+.m2/
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+logs/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+docs/
+README.md
+HELP.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+

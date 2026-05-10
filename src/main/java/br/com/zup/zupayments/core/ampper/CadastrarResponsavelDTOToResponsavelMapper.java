@@ -4,7 +4,9 @@ import br.com.zup.zupayments.dtos.responsavel.entrada.CadastrarResponsavelDTO;
 import br.com.zup.zupayments.models.Responsavel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CadastrarResponsavelDTOToResponsavelMapper implements Mapper<CadastrarResponsavelDTO, Responsavel> {
     private static final Logger log = LoggerFactory.getLogger(CadastrarResponsavelDTOToResponsavelMapper.class);
 

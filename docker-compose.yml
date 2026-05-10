@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: zupayments-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: zupayments
+      MYSQL_USER: zupayments
+      MYSQL_PASSWORD: zupayments123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - zupayments-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zupayments-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      URL: jdbc:mysql://mysql:3306/zupayments
+      USER_BANCO_DADOS: root
+      PASSWORD_BANCO: root
+      EMAIL: ${EMAIL:-seu-email@gmail.com}
+      SENHA: ${SENHA:-sua-senha-app}
+      SECRET: ${SECRET:-sua-secret-jwt-super-secreto-e-longo}
+      TIMEOUT_LIMIT: ${TIMEOUT_LIMIT:-3600000}
+    ports:
+      - "8080:8080"
+    networks:
+      - zupayments-network
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+
+networks:
+  zupayments-network:
+    driver: bridge
+

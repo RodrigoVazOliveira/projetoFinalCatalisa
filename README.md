@@ -67,6 +67,43 @@ O sistema mantém uma base centralizada com:
 | Mockito | 5.x |
 | Jakarta Mail | 2.x |
 | Thymeleaf | 3.x |
+| Flyway | Últimas |
+| MySQL | 8.0+ |
+
+---
+
+## 🗄️ Banco de Dados
+
+### Flyway - Controle de Versão de Schema
+
+O projeto utiliza **Flyway** para gerenciar migrations de banco de dados de forma versionada e rastreável.
+
+**Migrations criadas:**
+- ✅ **V1__Create_Initial_Schema.sql** - Cria 7 tabelas principais
+- ✅ **V2__Insert_Sample_Data.sql** - Insere dados de exemplo
+
+**Arquivos de configuração:**
+- `FLYWAY.md` - Guia completo sobre Flyway
+- `MIGRATIONS.md` - Guia rápido de migrations
+- `SETUP_FLYWAY.md` - Setup e sumário
+- `TESTING_FLYWAY.md` - Guia de testes
+
+**Estrutura de tabelas:**
+```
+responsaveis (PK: email)
+    ├── pedidos_de_compras (FK: responsavel_email)
+    └── notas_fiscais (FK: responsavel_email)
+
+fornecedores (PK: cnpj_ou_cpf)
+    ├── pedidos_de_compras (FK: fornecedor_cnpj_ou_cpf)
+    └── notas_fiscais (FK: fornecedor_cnpj_ou_cpf)
+
+nota_fiscal_pedido_compra (N:M - linking table)
+
+usuarios (PK: id UUID)
+```
+
+Para mais informações, consulte a [Documentação Flyway](FLYWAY.md).
 
 ---
 
@@ -95,6 +132,33 @@ mvn spring-boot:run
 ```
 
 Acesse: `http://localhost:8080`
+
+### Com Docker Compose
+
+Para executar com Docker (incluindo MySQL):
+
+```bash
+# 1. Clonar variáveis de ambiente
+cp .env.example .env
+
+# 2. Editar .env com suas credenciais (Gmail, JWT Secret)
+nano .env
+
+# 3. Iniciar com Docker Compose
+docker-compose up -d
+
+# 4. Acessar a aplicação
+# http://localhost:8080
+# http://localhost:8080/swagger-ui.html
+
+# 5. Ver logs
+docker-compose logs -f app
+
+# 6. Parar aplicação
+docker-compose down
+```
+
+Para mais detalhes, consulte [DOCKER.md](DOCKER.md)
 
 ---
 
@@ -256,12 +320,12 @@ Este projeto utiliza **GitHub Actions** para automatizar o build, testes e anál
 #### 1. **CI/CD Pipeline** (`.github/workflows/ci-cd.yml`)
 
 Executado automaticamente em:
-- **Push** para `main` ou `develop`
-- **Pull Requests** para `main` ou `develop`
+- **Push** para `master`
+- **Pull Requests** para `master`
 
 **Passos executados:**
 1. ✅ Checkout do código
-2. ✅ Setup do JDK 17 com cache Maven
+2. ✅ Setup do JDK 21 com cache Maven
 3. ✅ Compilação (Maven clean compile)
 4. ✅ Execução de testes unitários (Maven test)
 5. ✅ Build do projeto (Maven package)
@@ -277,13 +341,21 @@ Executado automaticamente em:
 #### 2. **Análise de Qualidade** (`.github/workflows/quality-analysis.yml`)
 
 Executado automaticamente em:
-- **Push** para `main` ou `develop`
-- **Pull Requests** para `main` ou `develop`
+- **Push** para `master`
+- **Pull Requests** para `master`
 
 **Passos executados:**
 1. ✅ Testes com cobertura JaCoCo
 2. ✅ Upload para Codecov
 3. ✅ Análise SonarQube (opcional)
+
+#### 3. **Feature PR Creator** (`.github/workflows/feature-pr.yml`)
+
+Cria automaticamente Pull Requests para `master` a partir de branches `feature/**`:
+- ✅ Valida se PR já existe
+- ✅ Cria PR com template automático
+- ✅ Adiciona labels automáticos
+- ✅ Comenta com orientações
 
 ### 🔐 Configuração de Secrets (Opcional)
 
@@ -351,21 +423,63 @@ projetoFinalCatalisa/
 │   └── workflows/
 │       ├── ci-cd.yml
 │       ├── quality-analysis.yml
+│       ├── feature-pr.yml
 │       └── README.md
 ├── src/
-│   ├── main/java/br/com/zup/zupayments/
-│   │   ├── controllers/
-│   │   ├── services/
-│   │   ├── models/
-│   │   ├── repositories/
-│   │   ├── dtos/
-│   │   ├── exceptions/
-│   │   └── mappers/
+│   ├── main/
+│   │   ├── java/br/com/zup/zupayments/
+│   │   │   ├── controllers/
+│   │   │   ├── services/
+│   │   │   ├── models/
+│   │   │   ├── repositories/
+│   │   │   ├── dtos/
+│   │   │   ├── enums/
+│   │   │   ├── exceptions/
+│   │   │   └── mappers/
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── mensagens.properties
+│   │       └── db/migration/          ← Flyway Migrations
+│   │           ├── V1__Create_Initial_Schema.sql
+│   │           └── V2__Insert_Sample_Data.sql
 │   └── test/java/br/com/zup/zupayments/
+├── docs/
 ├── pom.xml
+├── docker-compose.yml
+├── Dockerfile
+├── .dockerignore
+├── .env.example
+├── DOCKER.md
+├── FLYWAY.md
+├── MIGRATIONS.md
+├── SETUP_FLYWAY.md
+├── TESTING_FLYWAY.md
 └── README.md
 ```
 
 ---
 
-**Última atualização:** 17 de Abril de 2026
+**Última atualização:** 18 de Abril de 2026
+
+## 📖 Documentação Adicional
+
+- 🐳 [Docker e Containerização](DOCKER.md)
+- 🗄️ [Flyway - Migrations do Banco](FLYWAY.md)
+- 📋 [Guia Rápido de Migrations](MIGRATIONS.md)
+- ⚙️ [Setup Flyway](SETUP_FLYWAY.md)
+- 🧪 [Testes de Migrations](TESTING_FLYWAY.md)
+
+## 🤝 Contribuindo
+
+1. Crie uma branch `feature/sua-feature`
+2. Commit suas mudanças
+3. Push para a branch
+4. GitHub Actions criará PR automaticamente
+5. Aguarde review e merge
+
+## 📞 Suporte
+
+Para dúvidas ou problemas:
+- Consulte a documentação completa nos arquivos `.md`
+- Verifique os logs da aplicação
+- Acesse o Swagger em `/swagger-ui.html`
