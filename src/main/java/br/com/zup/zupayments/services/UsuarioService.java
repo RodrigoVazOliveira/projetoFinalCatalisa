@@ -81,7 +81,8 @@ public class UsuarioService {
         if (optionalUsuario.isEmpty()) {
             log.warn("usuario nao enocntrado pro email {}", email);
 
-            throw new RuntimeException("Usuário com email " + email + " não localizado!");
+            throw new UsuarioNaoEncontradoComEmailException("Usuário com " +
+                    "email " + email + " não localizado!");
         }
 
         return optionalUsuario.get();

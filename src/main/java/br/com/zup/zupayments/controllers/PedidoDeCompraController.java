@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -185,11 +184,10 @@ public class PedidoDeCompraController {
             log.info("Iniciando envio de emails de cobrança. Filtro: valor mínimo={}, ativo={}, data inicial={}",
                     filtro.valorMinimo(), filtro.ativo(), filtro.dataInicial());
 
-            final Double valorMinimo = filtro.valorMinimo();
-            final Boolean ativo = filtro.ativo();
-            final LocalDate dataInicial = filtro.dataInicial();
-
-            pedidoDeCompraService.enviarEmailParaPedidosDeCompraComNotasPendentes(valorMinimo, ativo, dataInicial);
+            pedidoDeCompraService.enviarEmailParaPedidosDeCompraComNotasPendentes(
+                    filtro.valorMinimo(),
+                    filtro.ativo(),
+                    filtro.dataInicial());
 
             log.info("Emails de cobrança enviados com sucesso");
         } catch (MessagingException e) {

@@ -26,19 +26,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class ConfiguracaoDeSeguranca {
-
     private final ComponenteJWT componenteJWT;
     private final UsuarioLoginService usuarioLoginService;
     private final UsuarioRepository usuarioRepository;
 
-    public ConfiguracaoDeSeguranca(ComponenteJWT componenteJWT, UsuarioLoginService usuarioLoginService, UsuarioRepository usuarioRepository) {
+    public ConfiguracaoDeSeguranca(ComponenteJWT componenteJWT,
+                                   UsuarioLoginService usuarioLoginService,
+                                   UsuarioRepository usuarioRepository) {
         this.componenteJWT = componenteJWT;
         this.usuarioLoginService = usuarioLoginService;
         this.usuarioRepository = usuarioRepository;
     }
 
     @Bean
-    public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) {
         final AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(usuarioLoginService).passwordEncoder(critografarSenha());
         final AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
@@ -75,23 +76,23 @@ public class ConfiguracaoDeSeguranca {
 
                 // Session management - Stateless para HTTP/2
                 .sessionManagement(sessionManagement ->
-                    sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // Authentication manager
                 .authenticationManager(authenticationManager)
 
                 // Filtros JWT
                 .addFilterBefore(
-                    new FiltroAutencicacaoJWT(componenteJWT, authenticationManager, new UsuarioService(usuarioRepository, critografarSenha())),
-                    UsernamePasswordAuthenticationFilter.class)
+                        new FiltroAutencicacaoJWT(componenteJWT, authenticationManager, new UsuarioService(usuarioRepository, critografarSenha())),
+                        UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(
-                    new FiltroDeAutorizacao(authenticationManager, componenteJWT, usuarioLoginService),
-                    UsernamePasswordAuthenticationFilter.class)
+                        new FiltroDeAutorizacao(authenticationManager, componenteJWT, usuarioLoginService),
+                        UsernamePasswordAuthenticationFilter.class)
 
                 // Headers de segurança (compatível com HTTP/2)
                 .headers(headers -> headers
-                    .cacheControl(cache -> cache.disable())
-                    .httpStrictTransportSecurity(hsts -> hsts.disable()));
+                        .cacheControl(cache -> cache.disable())
+                        .httpStrictTransportSecurity(hsts -> hsts.disable()));
 
         return http.build();
     }

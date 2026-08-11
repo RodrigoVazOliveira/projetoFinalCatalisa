@@ -3,6 +3,8 @@ package br.com.zup.zupayments.jwt;
 import br.com.zup.zupayments.exceptions.TokenNotValidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +13,18 @@ import java.util.Date;
 
 @Component
 public class ComponenteJWT {
+    private static final Logger log = LoggerFactory.getLogger(ComponenteJWT.class);
+    private final String segredo;
+    private final Long milisegundos;
 
-    @Value("{jwt.secret}")
-    private String segredo;
-
-    @Value("${jwt.timeout}")
-    private Long milisegundos;
+    public ComponenteJWT(
+            @Value("${jwt.secret}")
+            String segredo,
+            @Value("${jwt.timeout}")
+            Long milisegundos) {
+        this.segredo = segredo;
+        this.milisegundos = milisegundos;
+    }
 
     public String gerarToken(String username) {
         Date vencimento = new Date(System.currentTimeMillis() + milisegundos);
@@ -37,6 +45,7 @@ public class ComponenteJWT {
                     .parseSignedClaims(token)
                     .getPayload();
         } catch (Exception error) {
+            log.error("Erro ao parsear token JWT", error);
             throw new TokenNotValidException(error.getMessage());
         }
     }
@@ -49,7 +58,10 @@ public class ComponenteJWT {
             Date agora = new Date(System.currentTimeMillis());
 
             return username != null && vencimento != null && agora.before(vencimento);
-        } catch (TokenNotValidException error) {
+        } catch (TokenNotValidException tokenNotValidException) {
+            log.info("Ocorreu um problema ao validar token - message: {}",
+                    tokenNotValidException.getMessage());
+
             return false;
         }
     }
