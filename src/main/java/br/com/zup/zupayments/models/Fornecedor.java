@@ -47,9 +47,6 @@ public class Fornecedor {
     @Column(nullable = false)
     private Boolean ativo;
 
-    public Fornecedor() {
-    }
-
     public String getCnpjOuCpf() {
         return cnpjOuCpf;
     }

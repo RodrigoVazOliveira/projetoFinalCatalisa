@@ -1,36 +1,21 @@
 package br.com.zup.zupayments.exceptions.erros;
 
 public class UsuarioNaoExisteException extends RuntimeException{
-    private Integer status = 400;
-    private String tipoDeErro = "usuário não cadastrado";
-    private String motivo = "BAD REQUEST";
-
-    public UsuarioNaoExisteException(){
-    }
+    private static final Integer STATUS = 400;
+    private static final String USUARIO_NAO_ENCONTRADO = "usuário não cadastrado";
+    private static final String MOTIVO = "BAD REQUEST";
 
     public UsuarioNaoExisteException(String message){super(message);}
 
     public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+        return STATUS;
     }
 
     public String getTipoDeErro() {
-        return tipoDeErro;
-    }
-
-    public void setTipoDeErro(String tipoDeErro) {
-        this.tipoDeErro = tipoDeErro;
+        return USUARIO_NAO_ENCONTRADO;
     }
 
     public String getMotivo() {
-        return motivo;
-    }
-
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
+        return MOTIVO;
     }
 }

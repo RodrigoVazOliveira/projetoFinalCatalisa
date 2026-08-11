@@ -20,9 +20,16 @@ public class UsuarioLoginService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
-        usuarioOptional.orElseThrow(() -> new UsernameNotFoundException("Email não cadastrado"));
-        Usuario usuario = usuarioOptional.get();
+        Usuario usuario =
+                usuarioOptional
+                        .orElseThrow(
+                                () -> new UsernameNotFoundException("Email não cadastrado"));
 
-        return new UsuarioLogin(usuario.getEmail(), usuario.getSenha(), usuario.getNomeCompleto(), usuario.getNivelDeAcesso());
+        return new UsuarioLogin(
+                usuario.getEmail(),
+                usuario.getSenha(),
+                usuario.getNomeCompleto(),
+                usuario.getNivelDeAcesso()
+        );
     }
 }

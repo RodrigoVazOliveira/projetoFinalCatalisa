@@ -42,6 +42,16 @@ services:
     networks:
       - zupayments-network
     restart: unless-stopped
+    # Limites de recursos para o container
+    # O JVM detectará esses limites automaticamente com -XX:+UseContainerSupport
+    deploy:
+      resources:
+        limits:
+          cpus: '2'           # Máximo 2 CPUs
+          memory: 1536M       # Máximo 1536MB de RAM (52% para heap, 48% para overhead)
+        reservations:
+          cpus: '1'           # Reservar 1 CPU
+          memory: 1024M       # Reservar 1GB de RAM
 
 volumes:
   mysql-data:

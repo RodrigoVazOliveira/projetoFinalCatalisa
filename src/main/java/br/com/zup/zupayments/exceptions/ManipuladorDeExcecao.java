@@ -14,7 +14,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
@@ -47,7 +46,7 @@ public class ManipuladorDeExcecao extends ResponseEntityExceptionHandler {
     public RespostaDeErro manipularRuntimeException(ExcecaoBasica erro) {
         ObjetoDeErro objetoDeErro = new ObjetoDeErro(erro.getMessage(), erro.getCampo());
         RespostaDeErro respostaDeErro = new RespostaDeErro(erro.getMessage(), erro.getStatus(),
-                erro.getMotivo(), Arrays.asList(objetoDeErro));
+                erro.getMotivo(), List.of(objetoDeErro));
 
         return respostaDeErro;
     }

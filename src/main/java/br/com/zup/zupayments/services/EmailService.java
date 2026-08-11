@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 public class EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private static final String EMAIL_FROM = "staff@zup.com.br";
+    private static final String EMAIL_SUBJECT_PREFIX = "URGENTE: Nota fiscal pendente - pedido ";
 
     private final SpringTemplateEngine springTemplateEngine;
     private final JavaMailSender javaMailSender;
@@ -38,11 +41,11 @@ public class EmailService {
         helper.setTo(emailDestino);
         logger.debug("Email destinado para: {}", emailDestino);
 
-        String assunto = "URGENTE: Nota fiscal pendente - pedido " + pedidoDeCompra.getNumeroDePedido();
+        String assunto = EMAIL_SUBJECT_PREFIX + pedidoDeCompra.getNumeroDePedido();
         helper.setSubject(assunto);
         logger.debug("Assunto do email: {}", assunto);
 
-        helper.setFrom("staff@zup.com.br");
+        helper.setFrom(EMAIL_FROM);
 
         Context context = new Context();
         context.setVariable("nomeResponsavel", pedidoDeCompra.getResponsavel().getNomeCompleto());
@@ -57,9 +60,11 @@ public class EmailService {
         try {
             javaMailSender.send(mensagem);
             logger.info("Email enviado com sucesso para pedido de compra: {}", pedidoDeCompra.getNumeroDePedido());
-        } catch (Exception e) {
-            logger.error("Erro ao enviar email para pedido de compra: {}", pedidoDeCompra.getNumeroDePedido(), e);
-            throw e;
+        } catch (MailException mailException) {
+            logger.error("Erro ao enviar email para pedido de compra {}",
+                    pedidoDeCompra.getNumeroDePedido(), mailException);
+
+            throw new ErroEnviarEmailException("Ocorreu um problema ao enviar o email");
         }
     }
 }
